@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import tkinter.simpledialog as sd
 import os
 
 class ButtonWindow(tk.Frame):
@@ -22,17 +22,15 @@ class ButtonWindow(tk.Frame):
         remove_button = tk.Button(buttons_frame, text="-", command=self.remove_button)
         remove_button.pack(side=tk.RIGHT)
 
-        # Create four custom buttons
-        for i in range(4):
-            button = tk.Button(self.master, text=f"Button {i+1}", command=lambda i=i: self.run_application(i))
+    def add_button(self):
+        # Get name for new button
+        name = sd.askstring("Button Name", "Enter the name for the new button:")
+
+        if name:
+            # Add new button
+            button = tk.Button(self.master, text=name, command=lambda: self.run_application(len(self.buttons)))
             button.pack(side=tk.TOP, fill=tk.X)
             self.buttons.append(button)
-
-    def add_button(self):
-        # Add new button
-        button = tk.Button(self.master, text="New Button", command=lambda: self.run_application(len(self.buttons)))
-        button.pack(side=tk.TOP, fill=tk.X)
-        self.buttons.append(button)
 
     def remove_button(self):
         # Remove last button

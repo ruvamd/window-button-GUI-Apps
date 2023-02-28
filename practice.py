@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.simpledialog as sd
 import os
 
 class ButtonWindow(tk.Frame):
@@ -21,44 +22,27 @@ class ButtonWindow(tk.Frame):
         remove_button = tk.Button(buttons_frame, text="-", command=self.remove_button)
         remove_button.pack(side=tk.RIGHT)
 
-        # Create four custom buttons
-        for i in range(4):
-            button_frame = tk.Frame(self.master)
-            button_frame.pack(side=tk.TOP, fill=tk.X)
-
-            # Path entry
-            path_entry = tk.Entry(button_frame)
-            path_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-            # Run button
-            run_button = tk.Button(button_frame, text=f"Button {i+1}", command=lambda index=i: self.run_application(path_entry.get()))
-            run_button.pack(side=tk.LEFT)
-
-            self.buttons.append(button_frame)
-
     def add_button(self):
-        # Add new button
-        button_frame = tk.Frame(self.master)
-        button_frame.pack(side=tk.TOP, fill=tk.X)
+        # Get name for new button
+        name = sd.askstring("Button Name", "Enter the name for the new button:")
 
-        # Path entry
-        path_entry = tk.Entry(button_frame)
-        path_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-        # Run button
-        run_button = tk.Button(button_frame, text="New Button", command=lambda: self.run_application(path_entry.get()))
-        run_button.pack(side=tk.LEFT)
-
-        self.buttons.append(button_frame)
+        if name:
+            # Add new button
+            button = tk.Button(self.master, text=name, command=lambda: self.run_application(len(self.buttons)))
+            button.pack(side=tk.TOP, fill=tk.X)
+            self.buttons.append(button)
 
     def remove_button(self):
         # Remove last button
         if self.buttons:
-            button_frame = self.buttons.pop()
-            button_frame.pack_forget()
-            button_frame.destroy()
+            button = self.buttons.pop()
+            button.pack_forget()
+            button.destroy()
 
-    def run_application(self, path):
+    def run_application(self, index):
+        # Get path from user
+        path = tk.filedialog.askopenfilename()
+
         # Run application
         if path:
             os.system(f'"{path}"')
