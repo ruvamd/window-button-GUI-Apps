@@ -5,6 +5,7 @@ import subprocess
 import pathlib
 import os
 import sys
+import json
 
 class ButtonWindow(tk.Frame):
     def __init__(self, master):
@@ -12,6 +13,7 @@ class ButtonWindow(tk.Frame):
         self.master = master
         self.buttons = []
         self.create_widgets()
+        self.load_buttons()
 
     def create_widgets(self):
         # Create buttons frame
@@ -40,6 +42,7 @@ class ButtonWindow(tk.Frame):
             button.file_path = path
             button.pack(side=tk.TOP, fill=tk.X)
             self.buttons.append(button)
+            self.save_buttons()
 
     def remove_button(self):
         # Remove last button
@@ -47,6 +50,7 @@ class ButtonWindow(tk.Frame):
             button = self.buttons.pop()
             button.pack_forget()
             button.destroy()
+            self.save_buttons()
 
     def rename_button(self):
         # Select button to rename
@@ -56,6 +60,7 @@ class ButtonWindow(tk.Frame):
                 new_name = tkinter.simpledialog.askstring("Rename Button", "Enter new name:")
                 if new_name:
                     self.buttons[button-1].config(text=new_name)
+                    self.save_buttons()
 
     def run_application(self, button):
         # Run application
@@ -66,6 +71,25 @@ class ButtonWindow(tk.Frame):
         elif os.name == 'posix':  # For Linux, Unix, etc.
             subprocess.call(('xdg-open', button.file_path))
 
+    def save_buttons(self):
+        # Save button data to file
+        data = [{'name': button['text'], 'path': button.file_path} for button in self.buttons]
+        with open('buttons.json', 'w') as f:
+            json.dump(data, f)
+
+    def load_buttons(self):
+        # Load button data from file
+        try:
+            with open('buttons.json', 'r') as f:
+                data = json.load(f)
+                for item in data:
+                    button = tk.Button(self.master, text=item['name'], command=lambda path=item['path']: self.run_application(path))
+                    button.file_path = item['path']
+                    button.pack(side=tk.TOP, fill=tk.X)
+                    self.buttons.append(button)
+        except FileNotFoundError:
+            pass
+        
 # Create main window
 root = tk.Tk()
 root.title("Button Window")
