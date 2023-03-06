@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.simpledialog as sd
 import os
+from pathlib import Path
 
 class ButtonWindow(tk.Frame):
     def __init__(self, master):

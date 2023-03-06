@@ -1,6 +1,8 @@
 import tkinter as tk
-import tkinter.simpledialog as sd
+import tkinter.filedialog
+import tkinter.simpledialog
 import os
+import pathlib
 
 class ButtonWindow(tk.Frame):
     def __init__(self, master):
@@ -23,12 +25,13 @@ class ButtonWindow(tk.Frame):
         remove_button.pack(side=tk.RIGHT)
 
     def add_button(self):
-        # Get name for new button
-        name = sd.askstring("Button Name", "Enter the name for the new button:")
+        # Get path for new button
+        path = tk.filedialog.askopenfilename()
 
-        if name:
+        if path:
             # Add new button
-            button = tk.Button(self.master, text=name, command=lambda: self.run_application(len(self.buttons)))
+            button = tk.Button(self.master, text=pathlib.Path(path).name, command=lambda: self.run_application(button))
+            button.file_path = path
             button.pack(side=tk.TOP, fill=tk.X)
             self.buttons.append(button)
 
@@ -39,13 +42,9 @@ class ButtonWindow(tk.Frame):
             button.pack_forget()
             button.destroy()
 
-    def run_application(self, index):
-        # Get path from user
-        path = tk.filedialog.askopenfilename()
-
+    def run_application(self, button):
         # Run application
-        if path:
-            os.system(f'"{path}"')
+        os.startfile(button.file_path)
 
 # Create main window
 root = tk.Tk()
