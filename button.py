@@ -1,10 +1,10 @@
-import os
-import sys
 import tkinter as tk
 import tkinter.filedialog
 import tkinter.simpledialog
 import subprocess
 import pathlib
+import os
+import sys
 
 class ButtonWindow(tk.Frame):
     def __init__(self, master):
@@ -18,11 +18,15 @@ class ButtonWindow(tk.Frame):
         buttons_frame = tk.Frame(self.master)
         buttons_frame.pack(side=tk.TOP, fill=tk.X)
 
-        # Add button
+        # Add pencil sign button
+        pencil_sign_button = tk.Button(buttons_frame, text="\u270E", command=self.rename_button)
+        pencil_sign_button.pack(side=tk.LEFT)
+
+        # Add add button
         add_button = tk.Button(buttons_frame, text="+", command=self.add_button)
         add_button.pack(side=tk.RIGHT)
 
-        # Remove button
+        # Add remove button
         remove_button = tk.Button(buttons_frame, text="-", command=self.remove_button)
         remove_button.pack(side=tk.RIGHT)
 
@@ -43,6 +47,15 @@ class ButtonWindow(tk.Frame):
             button = self.buttons.pop()
             button.pack_forget()
             button.destroy()
+
+    def rename_button(self):
+        # Select button to rename
+        if self.buttons:
+            button = tkinter.simpledialog.askinteger("Rename Button", "Enter button index to rename (starting from 1):")
+            if button and button > 0 and button <= len(self.buttons):
+                new_name = tkinter.simpledialog.askstring("Rename Button", "Enter new name:")
+                if new_name:
+                    self.buttons[button-1].config(text=new_name)
 
     def run_application(self, button):
         # Run application
