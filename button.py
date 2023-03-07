@@ -38,11 +38,12 @@ class ButtonWindow(tk.Frame):
 
         if path:
             # Add new button
-            button = tk.Button(self.master, text=pathlib.Path(path).name, command=lambda: self.run_application(button))
+            button = tk.Button(self.master, text=pathlib.Path(path).name, command=lambda path=path: self.run_application(path))
             button.file_path = path
             button.pack(side=tk.TOP, fill=tk.X)
             self.buttons.append(button)
             self.save_buttons()
+
 
     def remove_button(self):
         # Remove last button
@@ -62,14 +63,14 @@ class ButtonWindow(tk.Frame):
                     self.buttons[button-1].config(text=new_name)
                     self.save_buttons()
 
-    def run_application(self, button):
+    def run_application(self, path):
         # Run application
         if sys.platform.startswith('darwin'):  # For macOS
-            subprocess.call(('open', button.file_path))
+            subprocess.call(('open', path))
         elif os.name == 'nt':  # For Windows
-            os.startfile(button.file_path)
+            os.startfile(path)
         elif os.name == 'posix':  # For Linux, Unix, etc.
-            subprocess.call(('xdg-open', button.file_path))
+            subprocess.call(('xdg-open', path))
 
     def save_buttons(self):
         # Save button data to file
@@ -87,6 +88,7 @@ class ButtonWindow(tk.Frame):
                     button.file_path = item['path']
                     button.pack(side=tk.TOP, fill=tk.X)
                     self.buttons.append(button)
+                    
         except FileNotFoundError:
             pass
         
